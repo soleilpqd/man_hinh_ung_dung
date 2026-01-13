@@ -258,7 +258,8 @@ class MyApp extends StatelessWidget {
   - 1 object `DieuKhienManHinh` chỉ nên thêm vào trong 1 luồng. Nhiều luồng cùng chứa 1 object `DieuKhienManHinh` có thể chạy sai logic.
   - 1 object `DieuKhienManHinh` có thể trải qua các giai đoạn sau: khởi tại (constructor) -> thêm vào luồng (`manHinhDuocThemVaoLuong`) -> được làm màn hình chính trong luồng (`manHinhSeThanhManHinhChinhTrongLuong` -[hiệu ứng chuyển màn]-> `manHinhDaThanhManHinhChinhTrongLuong`) -> thôi làm màn hình chính trong luồng (`manHinhSeThoiLamManHinhChinhTrongLuong` -[hiệu ứng chuyển màn]-> `manHinhDaThoiLamManHinhChinhTrongLuong`) -> loại khỏi luồng (`manHinhBiLoaiBoKhoiLuong`).
   - Trong hàm `manHinhBiLoaiBoKhoiLuong` thì xử lý tương tự như hàm `dispose` của Flutter: loại bỏ các kết nối (listener, observer ...). Object `DieuKhienManHinh` sau thời điểm của hàm này thì không sử dụng nữa.
-
+  - Mặc định hàm `manHinhBiLoaiBoKhoiLuong` của `DieuKhienManHinh` xoá bỏ kết nối đến `trangThaiWidgetManHinh`. Hàm `manHinhBiLoaiBoKhoiLuong` của `LuongManHinh` đồng thời cũng sẽ loại bỏ các màn hình con của nó (để đảm bảo các màn hình con cũng nhận được sự kiện `manHinhBiLoaiBoKhoiLuong`). Các hàm như `manHinhDuocThemVaoLuong`, ... của `LuongManHinh` sẽ gọi tiếp vào các hàm tương ứng `luongManHinhDuocThemVaoLuong`, ... của các màn con.
+  - Vì vậy khi subclass `DieuKhienManHinh` và `LuongManHinh` cần chú ý gọi `super...` nếu override các hàm sự kiện ở trên.
 ## Giấy phép:
 
 MIT (xem [License](./LICENSE))
