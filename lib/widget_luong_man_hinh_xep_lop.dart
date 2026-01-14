@@ -43,8 +43,16 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// Mặc định là `false`.
   /// Từ màn hình hiện tại trở về trước, dừng hiển thị nếu màn hình có thuộc tính này `false`.
   static const String kKeyThamSoLopTrong = "WidgetLuongXepLop_Trong";
+  /// Điều khiển hoạt hình (nếu có) khi áp dụng hiệu ứng chuyển động chuyển màn hình.
+  /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
+  /// Kiểu dữ liệu: `AnimationController`.
+  static const String kKeyDieuKhienHoatHoa = "WidgetLuongXepLop_AnimController";
+  /// Kiểu hiệu ứng chuyển động khi chuyển màn hình (`true` là màn hình được hiển thị, `false` là màn hình bị ẩn đi).
+  /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
+  /// Kiểu dữ liệu: `bool`.
+  static const String kKeyDieuKhienKieuChuyenDoi = "WidgetLuongXepLop_Kieu";
 
-  static Widget _xayDungLopTruot(BuildContext context, Container mucTieu, AnimationController dieuKhien, Offset toaDoBatDau) {
+  static Widget _xayDungLopTruot(BuildContext context, Widget mucTieu, AnimationController dieuKhien, Offset toaDoBatDau) {
     final Animation<Offset> toaDo = Tween<Offset>(
       begin: toaDoBatDau,
       end: Offset.zero
@@ -56,19 +64,19 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   }
 
   /// Xây dựng Widget hoạt hình trượt xuống
-  static Widget xayDungLopTruotXuong(BuildContext context, Container mucTieu, AnimationController dieuKhien)
+  static Widget xayDungLopTruotXuong(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
    => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(0, -1.0));
   /// Xây dựng Widget hoạt hình trượt lên
-  static Widget xayDungLopTruotLen(BuildContext context, Container mucTieu, AnimationController dieuKhien)
+  static Widget xayDungLopTruotLen(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
    => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(0, 1.0));
   /// Xây dựng Widget hoạt hình trượt trái sang phải
-  static Widget xayDungLopTruotTraiSangPhai(BuildContext context, Container mucTieu, AnimationController dieuKhien)
+  static Widget xayDungLopTruotTraiSangPhai(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
    => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(-1.0, 0));
   /// Xây dựng Widget hoạt hình trượt phải sang trái
-  static Widget xayDungLopTruotPhaiSangTrai(BuildContext context, Container mucTieu, AnimationController dieuKhien)
+  static Widget xayDungLopTruotPhaiSangTrai(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
    => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(1.0, 0));
   /// Xây dựng Widget hoạt hình theo độ mờ (độ trong suốt)
-  static Widget xayDungLopDoMo(BuildContext context, Container mucTieu, AnimationController dieuKhien) {
+  static Widget xayDungLopDoMo(BuildContext context, Widget mucTieu, AnimationController dieuKhien) {
     final Animation<double> doMo = Tween<double>(
       begin: 0,
       end: 1.0
@@ -79,11 +87,14 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
     );
   }
   /// Xây dựng Widget hoạt hình theo kích thước (zoom/scale)
-  static Widget xayDungLopThuPhong(BuildContext context, Container mucTieu, AnimationController dieuKhien) {
+  static Widget xayDungLopThuPhong(BuildContext context, Widget mucTieu, AnimationController dieuKhien) {
     final Animation<double> doThuPhong = Tween<double>(
       begin: 0,
       end: 1.0
-    ).animate(dieuKhien);
+    ).animate(CurvedAnimation(
+      parent: dieuKhien,
+      curve: Curves.easeInOutBack)
+    );
     return ScaleTransition(
       scale: doThuPhong,
       child: mucTieu
@@ -200,9 +211,13 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
       }
     }
     if (hoatHinh != null) {
+      final Map<String, dynamic> thamSoUI = {
+        WidgetLuongManHinhXepLop.kKeyDieuKhienHoatHoa: _dkChuyenDongHoatHinh,
+        WidgetLuongManHinhXepLop.kKeyDieuKhienKieuChuyenDoi: laThemMoi
+      };
       if (laThemMoi) {
         _xayDungDSHienThiManHinh(context, thamSoDk.manHinhCu, thamSoDk.danhSachManHinh);
-        final Container mhMoiContainer = thamSoDk.manHinhMoi!.taoContainer(context);
+        final Container mhMoiContainer = thamSoDk.manHinhMoi!.taoContainer(context, thamSoUI);
         final Widget animWidget = hoatHinh.call(context, mhMoiContainer, _dkChuyenDongHoatHinh);
         _lopHoatHinh = animWidget;
         setState(() {});
@@ -215,7 +230,7 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
         });
       } else {
         _xayDungDSHienThiManHinh(context, thamSoDk.manHinhMoi, thamSoDk.danhSachManHinh);
-        final Widget animWidget = hoatHinh.call(context, thamSoDk.manHinhCu!.taoContainer(context), _dkChuyenDongHoatHinh);
+        final Widget animWidget = hoatHinh.call(context, thamSoDk.manHinhCu!.taoContainer(context, thamSoUI), _dkChuyenDongHoatHinh);
         _lopHoatHinh = animWidget;
         setState(() {});
         _dkChuyenDongHoatHinh.reverse(from: _dkChuyenDongHoatHinh.upperBound).then((value) {
@@ -241,7 +256,7 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
         List<Widget> dsMhCanHienThi = [];
         for (int stt = sttHt; sttHt >= 0; stt -= 1) {
           final MucTrongLuongManHinh mh = dsManHinh[stt];
-          dsMhCanHienThi.add(mh.taoContainer(context));
+          dsMhCanHienThi.add(mh.taoContainer(context, null));
           bool laMhTrong = false;
           final temp = mh.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoLopTrong];
           if (temp is bool) {
@@ -253,11 +268,11 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
         }
         _dsMhCanHienThi = dsMhCanHienThi.reversed.toList();
       } else {
-        _dsMhCanHienThi.add(manHinhDich.taoContainer(context));
+        _dsMhCanHienThi.add(manHinhDich.taoContainer(context, null));
       }
     } else {
       for (final mh in dsManHinh) {
-        _dsMhCanHienThi.add(mh.taoContainer(context));
+        _dsMhCanHienThi.add(mh.taoContainer(context, null));
       }
     }
   }

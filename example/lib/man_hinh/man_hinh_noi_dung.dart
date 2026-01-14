@@ -326,7 +326,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
   }
 
   @override
-  Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+  Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
     return ManHinhNoiDung(dieuKhienManHinh: this);
   }
 

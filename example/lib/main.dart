@@ -3,7 +3,6 @@ import 'package:example/man_hinh/man_hinh_noi_dung.dart';
 import 'package:example/man_hinh/man_hinh_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:man_hinh_ung_dung/luong_man_hinh.dart';
-import 'package:man_hinh_ung_dung/man_hinh_ung_dung.dart';
 import 'package:man_hinh_ung_dung/widget_luong_man_hinh_truot.dart';
 import 'package:man_hinh_ung_dung/widget_luong_man_hinh_xep_lop.dart';
 
@@ -144,7 +143,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Container(
         color: Colors.white,
-        child: luongMHGoc.xayDungGiaoDienNguoiDung(context)
+        child: luongMHGoc.xayDungGiaoDienNguoiDung(context, null)
       )
     );
   }

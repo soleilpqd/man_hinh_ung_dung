@@ -24,7 +24,7 @@ class DieuKhienManHinhTab extends LuongManHinhCuaToi {
   }
 
   @override
-  Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+  Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
     return _ManHinhTab(dieuKhienManHinh: this);
   }
 
@@ -75,7 +75,7 @@ class _TrangThaiManHinhTab extends TrangThaiWidgetCuaDieuKhien<_ManHinhTab> with
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Expanded(child: widget.dieuKhienManHinh.manHinhHienTai?.xayDungGiaoDienNguoiDung(context) ?? Container()),
+      Expanded(child: widget.dieuKhienManHinh.manHinhHienTai?.xayDungGiaoDienNguoiDung(context, null) ?? Container()),
       SizedBox(
         height: 48,
         child: Row(

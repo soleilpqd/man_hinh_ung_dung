@@ -46,6 +46,14 @@ class WidgetLuongManHinhTruot extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// Sử dụng làm tham số trong các hàm thay đổi màn hình của luồng màn hình.
   /// Kiểu dữ liệu: `bool`.
   static const String kKeyThamSoHoatHoa = "WidgetLuongTruot_Anim";
+  /// Điều khiển hoạt hình (nếu có) khi áp dụng hiệu ứng chuyển động chuyển màn hình.
+  /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
+  /// Kiểu dữ liệu: `AnimationController`.
+  static const String kKeyDieuKhienHoatHoa = "WidgetLuongTruot_AnimController";
+  /// Kiểu hiệu ứng chuyển động khi chuyển màn hình (`true` là màn hình được hiển thị, `false` là màn hình bị ẩn đi).
+  /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
+  /// Kiểu dữ liệu: `bool`.
+  static const String kKeyDieuKhienKieuChuyenDoi = "WidgetLuongTruot_Kieu";
 
   /// Độ dài hoạt hình chuyển động
   final Duration doDaiHoatHinh;
@@ -173,9 +181,16 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
       }
     }
 
-    _manHinhCanHienThi = thamSoDk.manHinhMoi?.taoContainer(context);
+    Map<String, dynamic>? thamSoUI;
     if (hoatHinh) {
-      _manHinhCu = thamSoDk.manHinhCu?.taoContainer(context);
+      thamSoUI = {
+        WidgetLuongManHinhTruot.kKeyDieuKhienHoatHoa: _dkChuyenDongHoatHinh,
+        WidgetLuongManHinhTruot.kKeyDieuKhienKieuChuyenDoi: _laThemMoi
+      };
+    }
+    _manHinhCanHienThi = thamSoDk.manHinhMoi?.taoContainer(context, thamSoUI);
+    if (hoatHinh) {
+      _manHinhCu = thamSoDk.manHinhCu?.taoContainer(context, thamSoUI);
     }
     setState(() {});
     if (hoatHinh) {
@@ -195,7 +210,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
   Widget build(BuildContext context) {
     if (!_daKhoiTao) {
       _daKhoiTao = true;
-      _manHinhCanHienThi = widget.dieuKhienManHinh.manHinhHienTaiCuaLuong?.taoContainer(context);
+      _manHinhCanHienThi = widget.dieuKhienManHinh.manHinhHienTaiCuaLuong?.taoContainer(context, null);
       return _manHinhCanHienThi ?? Container(color: Colors.white.withAlpha(0));
     }
     if (_manHinhCu != null && _manHinhCanHienThi != null) {

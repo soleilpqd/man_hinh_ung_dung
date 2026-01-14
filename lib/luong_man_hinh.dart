@@ -37,10 +37,10 @@ class MucTrongLuongManHinh {
   MucTrongLuongManHinh({required this.key, required this.manHinh});
 
   /// Tạo Widget container chứa
-  Container taoContainer(BuildContext context) => Container(
+  Container taoContainer(BuildContext context, Map<String, dynamic>? thamSo) => Container(
     key: key,
     color: manHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0),
-    child: manHinh.xayDungGiaoDienNguoiDung(context)
+    child: manHinh.xayDungGiaoDienNguoiDung(context, thamSo)
   );
 
 }

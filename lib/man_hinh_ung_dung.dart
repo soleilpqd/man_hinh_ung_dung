@@ -182,7 +182,7 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   }
 
   /// Xây dựng giao diện người dùng
-  Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+  Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
     if (widgetCuaManHinh != null) {
       return widgetCuaManHinh!;
     }

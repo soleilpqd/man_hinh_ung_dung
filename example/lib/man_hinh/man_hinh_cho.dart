@@ -10,7 +10,7 @@ class ManHinhCho extends DieuKhienManHinh {
   }
 
   @override
-  Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+  Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
     return Container(
       color: Colors.black.withAlpha(128),
       child: Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor))

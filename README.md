@@ -59,12 +59,13 @@ View của màn hình sử dụng widget của Flutter, có 2 phương án sau:
     ```
     class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
         @override
-        Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+        Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
             return Widget(...);
         }
     }
     ```
-    Mặc định thì hàm `xayDungGiaoDienNguoiDung` là `return this.widgetCuaManHinh`.
+    - `thamSo`: dữ liệu đính kèm của các widget luồng màn hình khi xây dựng giao diện.
+    - Mặc định thì hàm `xayDungGiaoDienNguoiDung` là `return this.widgetCuaManHinh`.
 
 PA1 thường dùng cho các trường hợp không cần subclass `DieuKhienManHinh`, ví dụ như cho các luồng màn hình.
 
@@ -117,7 +118,7 @@ Vì luồng màn hình cũng là 1 màn hình nên luồng màn hình có thể 
 ```
 class LuongManHinhCuaToi extends LuongManHinh {
   @override
-  Widget xayDungGiaoDienNguoiDung(BuildContext context) {
+  Widget xayDungGiaoDienNguoiDung(BuildContext context, Map<String, dynamic>? thamSo) {
     return Widget(...);
   }
 }
