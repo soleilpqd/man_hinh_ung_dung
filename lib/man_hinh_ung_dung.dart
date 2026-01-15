@@ -110,7 +110,6 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   TrangThaiWidgetManHinh? _trangThaiWidgetManHinh;
   TrangThaiWidgetManHinh? get trangThaiWidgetManHinh => _trangThaiWidgetManHinh;
   set trangThaiWidgetManHinh(TrangThaiWidgetManHinh? trangThaiMoi) {
-    print("DEBUG: this=${tuMieuTa()}; cu=$_trangThaiWidgetManHinh; moi=$trangThaiMoi");
     if (_trangThaiWidgetManHinh != trangThaiMoi) {
       _trangThaiWidgetManHinh?.daBiThayThe();
       _trangThaiWidgetManHinh = trangThaiMoi;

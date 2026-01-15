@@ -80,6 +80,32 @@ class LuongManHinh extends DieuKhienManHinh {
   final List<MucTrongLuongManHinh> _danhSachManHinh = [];
   MucTrongLuongManHinh? _manHinhHienTai;
 
+  bool _dangCapNhat = false;
+  final List<void Function()> _hangDoiCapNhat = [];
+
+  bool _kiemTraDangCapNhat() {
+    if (_dangCapNhat) {
+      return true;
+    }
+    for (final muc in _danhSachManHinh) {
+      if (muc.manHinh is LuongManHinh) {
+        final LuongManHinh luongCon = muc.manHinh as LuongManHinh;
+        if (luongCon._kiemTraDangCapNhat()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  void _luongConDaCapNhatXong(LuongManHinh luongCon) {
+    if (_hangDoiCapNhat.isNotEmpty) {
+      _dayHangDoiCapNhat();
+    } else {
+      luongManHinh?._luongConDaCapNhatXong(luongCon);
+    }
+  }
+
   // Các APIs để khởi tạo widget cho luồng màn hình
   List<MucTrongLuongManHinh> get dsManHinhThuocLuong => _danhSachManHinh.toList();
   MucTrongLuongManHinh? get manHinhHienTaiCuaLuong => _manHinhHienTai;
@@ -217,6 +243,30 @@ class LuongManHinh extends DieuKhienManHinh {
     ThamSoDieuKhienWidgetManHinh? thamSo,
     void Function()? khiHoanThanh
   ) {
+    _hangDoiCapNhat.add(() {
+      _thucHienNapLai(manHinhCu, manHinhMoi, cacManHinhBiLoaiBo, thamSo, khiHoanThanh);
+    });
+    _dayHangDoiCapNhat();
+  }
+
+  void _dayHangDoiCapNhat() {
+    if (_hangDoiCapNhat.isEmpty) {
+      return;
+    }
+    if (!_kiemTraDangCapNhat()) {
+      final hanhDong = _hangDoiCapNhat.removeAt(0);
+      hanhDong.call();
+    }
+  }
+
+  void _thucHienNapLai(
+    MucTrongLuongManHinh? manHinhCu,
+    MucTrongLuongManHinh? manHinhMoi,
+    List<MucTrongLuongManHinh>? cacManHinhBiLoaiBo,
+    ThamSoDieuKhienWidgetManHinh? thamSo,
+    void Function()? khiHoanThanh
+  ) {
+    _dangCapNhat = true;
     // print("NAP LAI ${manHinhCu?.manHinh.tuMieuTa()} => ${manHinhMoi?.manHinh.tuMieuTa()}; $trangThai");
     manHinhCu?.manHinh.manHinhSeThoiLamManHinhChinhTrongLuong();
     manHinhMoi?.manHinh.manHinhSeThanhManHinhChinhTrongLuong();
@@ -232,6 +282,8 @@ class LuongManHinh extends DieuKhienManHinh {
       manHinhCu?.manHinh.manHinhDaThoiLamManHinhChinhTrongLuong();
       manHinhMoi?.manHinh.manHinhDaThanhManHinhChinhTrongLuong();
       khiHoanThanh?.call();
+      _dangCapNhat = false;
+      luongManHinh?._luongConDaCapNhatXong(this);
     }
 
     final ThamSoDieuKhienWidgetLuongManHinh thamSoDK = ThamSoDieuKhienWidgetLuongManHinh(

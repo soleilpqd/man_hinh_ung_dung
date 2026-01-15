@@ -185,6 +185,12 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
     ...
   }
 
+  void daBiThayThe() {
+    // Trạng thái widget hiện tại đã bị thay thế bởi 1 trạngt thái khác trong điều khiển màn hình
+    // Chỗ này cần kết thúc các thao tác dở trước để chuyển giao lại cho trạng thái mới
+    // VD: dừng hoạt hình và gọi hàm hoàn thành cập nhật luồng
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_daKhoiTao) {
@@ -204,6 +210,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   - `manHinhCu`: mục màn hình hiển thị trước đó. Có thể `null`. Mục này có thể nằm trong `danhSachManHinh` (ví dụ di chuyển màn hình từ màn hình thứ tự lớn về màn hình thứ tự nhỏ), hoặc có thể không (màn hình bị loại ra khỏi luồng).
   - `danhSachManHinh`: danh sách tất cả các màn hình hiện tại của luồng (sau khi thay đổi).
   - `hoatTatThayDoi`: hàm này bắt buộc phải gọi sau khi hoàn tất di chuyển widget màn hình. Giới hạn 1s (sau 1s mà hàm này không được gọi thì sẽ báo exception).
+- Hàm `daBiThayThe`: nếu vẫn đang trong quá trình hoạt hình thì cần dừng lại, và gọi hàm từ `hoatTatThayDoi` để hoàn tất logic cập nhật.
 
 ### III.3. Kết hợp màn hình và luồng màn hình:
 

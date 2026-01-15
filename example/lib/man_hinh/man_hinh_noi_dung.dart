@@ -123,6 +123,14 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
       mucChinh.cacMucCon.removeLast();
     }
     DuLieuToanCuc().addListener(_khiDuLieuToanCucThayDoi);
+    // Test cập nhật màn hình trong nhiều luồng đồng thời
+    if (
+      luongManHinh is LuongManHinhCuaToi &&
+      (luongManHinh as LuongManHinhCuaToi).dinhDanh == DinhDanhLuongManHinh.luong1 &&
+      luongManHinh!.danhSachManHinh.length == 2
+    ) {
+      _khiNhanThongBao();
+    }
   }
 
   @override
