@@ -42,7 +42,7 @@ class _ManHinhTab extends WidgetCuaDieuKhienManHinh<DieuKhienManHinhTab> {
 class _TrangThaiManHinhTab extends TrangThaiWidgetCuaDieuKhien<_ManHinhTab> with TrangThaiWidgetManHinh {
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     setState(() {
 
     });

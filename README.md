@@ -89,7 +89,7 @@ class _TrangThaiManHinhNoiDung extends TrangThaiWidgetCuaDieuKhien<ManHinhNoiDun
   }
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, Map<String, dynamic>? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, Map<String, dynamic>? duLieuDinhKem}) {
     // Cập nhật lại hiển thị theo tham số trong `duLieuDinhKem` hoặc/và trạng thái của `widget.dieuKhienManHinh`
   }
 
@@ -106,7 +106,7 @@ class _TrangThaiManHinhNoiDung extends TrangThaiWidgetCuaDieuKhien<ManHinhNoiDun
     ```
     widget.dieuKhienManHinh.trangThaiWidgetManHinh = this;
     ```
-- State của StatefulWidget của màn hình subclass override hàm `capNhaptGiaoDienCuaManHinh`: khi cần cập nhật lại giao diện hiển thị của widget, điều khiển màn hình gọi `trangThaiWidgetManHinh?.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {...});`
+- State của StatefulWidget của màn hình subclass override hàm `capNhatGiaoDienCuaManHinh`: khi cần cập nhật lại giao diện hiển thị của widget, điều khiển màn hình gọi `trangThaiWidgetManHinh?.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {...});`
 
 ### III.2. Luồng màn hình:
 
@@ -176,7 +176,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   }
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     dynamic temp = duLieuDinhKem?[LuongManHinh.kKeyThamSoDieuKhienWidgetLuongMH];
     if (temp is! ThamSoDieuKhienWidgetLuongManHinh) {
       throw("WidgetLuongManHinhTruot: Điều khiển màn hình không phải là 1 luồng");
@@ -198,7 +198,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
 }
 ```
 - Vì trong hàm `initState` chưa có context, ta có thể đặt 1 cờ `_daKhoiTao` để trong hàm `build` xây dựng giao diện cho trường hợp ban đầu (không có hiệu ứng chuyển màn hình, hiển thị trạng thái hiện tại của luồng màn hình luôn).
-- Trong hàm `capNhaptGiaoDienCuaManHinh`, lấy tham số điều khiển của luồng màn hình từ key `kKeyThamSoDieuKhienWidgetLuongMH`, là 1 object kiểu `ThamSoDieuKhienWidgetLuongManHinh`. Các thuộc tính:
+- Trong hàm `capNhatGiaoDienCuaManHinh`, lấy tham số điều khiển của luồng màn hình từ key `kKeyThamSoDieuKhienWidgetLuongMH`, là 1 object kiểu `ThamSoDieuKhienWidgetLuongManHinh`. Các thuộc tính:
   - `thamSoDieuKhienThayDoiManHinh`: chính là `thamSo` trong các hàm thay đổi màn hình của luồng màn hình.
   - `manHinhMoi`: mục màn hình cần được hiển thị. Có thể `null` (không có màn hình nào được hiển thị nữa). Mục này thì chắc chắn nằm trong `danhSachManHinh`.
   - `manHinhCu`: mục màn hình hiển thị trước đó. Có thể `null`. Mục này có thể nằm trong `danhSachManHinh` (ví dụ di chuyển màn hình từ màn hình thứ tự lớn về màn hình thứ tự nhỏ), hoặc có thể không (màn hình bị loại ra khỏi luồng).

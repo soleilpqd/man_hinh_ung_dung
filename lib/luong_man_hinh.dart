@@ -71,7 +71,7 @@ class ThamSoDieuKhienWidgetLuongManHinh {
 /// Luồng màn hình
 /// Widget cho luồng màn hình cần là StatefuleWidget để cập nhật lại UI.
 /// State của widget cho luồng màn hình cần triển khai `TrangThaiWidgetManHinh`,
-/// trong đó `duLieuDinhKem` đầu vào của hàm `capNhaptGiaoDienCuaManHinh` chứa các key `KeyThamSoDieuKhienWidget*`,
+/// trong đó `duLieuDinhKem` đầu vào của hàm `capNhatGiaoDienCuaManHinh` chứa các key `KeyThamSoDieuKhienWidget*`,
 /// cần chú ý chạy hàm từ key `KeyThamSoDieuKhienWidgetKhiHoanTatCapNhat` sau khi đã cập nhật lại xong.
 class LuongManHinh extends DieuKhienManHinh {
 
@@ -225,12 +225,12 @@ class LuongManHinh extends DieuKhienManHinh {
     final DateTime now = DateTime.now();
     _kiemThuWidget.add(now);
     hanhDongKhiXong() {
+      _kiemThuWidget.remove(now);
       if (cacManHinhBiLoaiBo != null && cacManHinhBiLoaiBo.isNotEmpty) {
         _hoanTatLoaiBoManHinh(cacManHinhBiLoaiBo);
       }
       manHinhCu?.manHinh.manHinhDaThoiLamManHinhChinhTrongLuong();
       manHinhMoi?.manHinh.manHinhDaThanhManHinhChinhTrongLuong();
-      _kiemThuWidget.remove(now);
       khiHoanThanh?.call();
     }
 
@@ -242,7 +242,7 @@ class LuongManHinh extends DieuKhienManHinh {
       thamSoDieuKhienThayDoiManHinh: thamSo
     );
     if (trangThaiWidgetManHinh != null) {
-      trangThaiWidgetManHinh!.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {kKeyThamSoDieuKhienWidgetLuongMH: thamSoDK});
+      trangThaiWidgetManHinh!.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {kKeyThamSoDieuKhienWidgetLuongMH: thamSoDK});
       final String mieuTa = "Trạng thái Widget $trangThaiWidgetManHinh của luồng màn hình ${tuMieuTa()} cần gọi hàm theo key `KeyThamSoDieuKhienWidgetKhiHoanTatCapNhat` khi cập nhật màn hình xong (giới hạn 1s)";
       Future.delayed(const Duration(seconds: 1)).then((value) {
         if (_kiemThuWidget.contains(now)) {

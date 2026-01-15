@@ -143,7 +143,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
     super.manHinhDaThanhManHinhChinhTrongLuong();
     print("MH NoiDung DA HIEN THI $maManHinh");
     mucChinh.cacMucCon[0].duLieuDinhKem += 1;
-    trangThaiWidgetManHinh?.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this);
+    trangThaiWidgetManHinh?.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this);
   }
 
   @override
@@ -167,7 +167,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
     print("MH Luong cha cua $maManHinh da thanh MH chinh ${luong.tuMieuTa()}");
     if (laManHinhChinhTrongLuong() ?? false) {
       mucChinh.cacMucCon[0].duLieuDinhKem += 1;
-      trangThaiWidgetManHinh?.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this);
+      trangThaiWidgetManHinh?.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this);
     }
   }
 
@@ -185,7 +185,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
 
   void khiNhanNutOK() {
     mucChinh.cacMucCon[2].duLieuDinhKem = "Xin chào ${(mucChinh.cacMucCon[3].duLieuDinhKem as TextEditingController).text}";
-    trangThaiWidgetManHinh?.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this);
+    trangThaiWidgetManHinh?.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this);
   }
 
   void khiNhanNutThem() {
@@ -311,7 +311,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
   void _khiDuLieuToanCucThayDoi() {
     print("DL TOAN CUC THAY DOI");
     _phanChieuDuLieu();
-    trangThaiWidgetManHinh?.capNhaptGiaoDienCuaManHinh(dieuKhienManHinh: this);
+    trangThaiWidgetManHinh?.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this);
   }
 
   // Khi nhấn checkbox -> thay đổi DL
@@ -361,7 +361,7 @@ class _TrangThaiManHinhNoiDung extends TrangThaiWidgetCuaDieuKhien<ManHinhNoiDun
   }
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, Map<String, dynamic>? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, Map<String, dynamic>? duLieuDinhKem}) {
     setState(() {});
   }
 

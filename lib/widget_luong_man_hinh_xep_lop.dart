@@ -103,8 +103,15 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
   }
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
-    _dkChuyenDongHoatHinh.reset();
+  void daBiThayThe() {
+    _dkChuyenDongHoatHinh.stop();
+    _hoanTatCapNhat?.call();
+    _hoanTatCapNhat = null;
+  }
+
+  @override
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
+    _dkChuyenDongHoatHinh.stop();
     _hoanTatCapNhat?.call();
     _hoanTatCapNhat = null;
     _dsMhCanHienThi.clear();
@@ -171,7 +178,7 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
         final Widget animWidget = hoatHinh.call(context, mhMoiContainer, _dkChuyenDongHoatHinh);
         _lopHoatHinh = animWidget;
         setState(() {});
-        _dkChuyenDongHoatHinh.forward().then((value) {
+        _dkChuyenDongHoatHinh.forward(from: _dkChuyenDongHoatHinh.lowerBound).then((value) {
           _dsMhCanHienThi.add(mhMoiContainer);
           _lopHoatHinh = null;
           setState(() {});

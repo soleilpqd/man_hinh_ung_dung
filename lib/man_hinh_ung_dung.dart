@@ -33,8 +33,13 @@ mixin TrangThaiWidgetManHinh {
   /// Nạp lại
   /// - [dieuKhienManHinh]: điều khiển màn hình yêu cầu nạp lại giao diện.
   /// - [duLieuDinhKem]: dữ liệu đính kèm (tuỳ ý)
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     throw Exception("Cần khai báo ở class kế thừa (không cần gọi super)");
+  }
+
+  /// Trạng thái hiện tại đã bị thay thế bằng 1 trạng thái khác
+  void daBiThayThe() {
+
   }
 
 }
@@ -102,7 +107,15 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   }
 
   /// Trạng thái (State) của Widget của Màn hình (để cập nhật lại giao diện)
-  TrangThaiWidgetManHinh? trangThaiWidgetManHinh;
+  TrangThaiWidgetManHinh? _trangThaiWidgetManHinh;
+  TrangThaiWidgetManHinh? get trangThaiWidgetManHinh => _trangThaiWidgetManHinh;
+  set trangThaiWidgetManHinh(TrangThaiWidgetManHinh? trangThaiMoi) {
+    print("DEBUG: this=${tuMieuTa()}; cu=$_trangThaiWidgetManHinh; moi=$trangThaiMoi");
+    if (_trangThaiWidgetManHinh != trangThaiMoi) {
+      _trangThaiWidgetManHinh?.daBiThayThe();
+      _trangThaiWidgetManHinh = trangThaiMoi;
+    }
+  }
   /// Tham số điều khiển gán cho Widget của luồng màn hình chứa màn hình hiện tại
   ThamSoDieuKhienWidgetManHinh thamSoDieuKhienWidgetLuong = {};
 

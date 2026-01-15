@@ -48,7 +48,7 @@ class _TrangThaiWidgetLuongManHinhDonGian extends TrangThaiWidgetCuaDieuKhien<Wi
   }
 
   @override
-  void capNhaptGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     dynamic temp = duLieuDinhKem?[LuongManHinh.kKeyThamSoDieuKhienWidgetLuongMH];
     if (temp is ThamSoDieuKhienWidgetLuongManHinh) {
       final ThamSoDieuKhienWidgetLuongManHinh thamSo = temp;
