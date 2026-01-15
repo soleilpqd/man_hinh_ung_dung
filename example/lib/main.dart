@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:man_hinh_ung_dung/luong_man_hinh.dart';
 import 'package:man_hinh_ung_dung/widget_luong_man_hinh_truot.dart';
 import 'package:man_hinh_ung_dung/widget_luong_man_hinh_xep_lop.dart';
+import 'package:man_hinh_ung_dung/xay_dung_widget_hoat_hinh.dart';
 
 void main() {
   runApp(MyApp());
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
     WidgetsFlutterBinding.ensureInitialized();
     luongMHGoc.widgetCuaManHinh = WidgetLuongManHinhXepLop(
       dieuKhienManHinh: luongMHGoc,
-      hoatHinh: WidgetLuongManHinhXepLop.xayDungLopTruotXuong
+      hoatHinh: xayDungLopTruotXuong
     );
     _khoiTaoLuongManHinhGoc();
     final AppLinks appLinks = AppLinks();

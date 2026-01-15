@@ -26,15 +26,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:man_hinh_ung_dung/luong_man_hinh.dart';
 import 'package:man_hinh_ung_dung/man_hinh_ung_dung.dart';
-
-typedef WidgetLuongXepLopXayDungLop = Widget Function(BuildContext, Container, AnimationController);
+import 'package:man_hinh_ung_dung/xay_dung_widget_hoat_hinh.dart';
 
 /// Widget cho luồng màn hình, xếp lớp các màn hình con.
 class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
 
   /// Kiểu `bool`. Có sử dụng hoạt hình chuyển động hay không. Mặc định là có và tuỳ theo các cấu hình hoạt hình.
   static const String kKeyThamSoChoPhepHoatHinh = "WidgetLuongXepLop_Animable";
-  /// Kiểu `WidgetLuongXepLopXayDungLop`. Dùng để tạo animation khi thay đổi màn hình.
+  /// Kiểu `XayDungWidgetHieuUngChuyenDong`. Dùng để tạo animation khi thay đổi màn hình.
   /// Áp dụng cho `thamSo` trong các hàm thay đổi màn hình của LuongManHinh (ưu tiên cao hơn)
   /// cũng như `thamSoDieuKhienThayDoiManHinh` của màn hình cần thay đổi.
   /// Lưu ý: khi thêm màn hình vào luồng thì sẽ chạy hoạt hình `forward`. Khi loại bỏ màn hình thì chạy hoạt hình `backward`.
@@ -52,61 +51,12 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// Kiểu dữ liệu: `bool`.
   static const String kKeyDieuKhienKieuChuyenDoi = "WidgetLuongXepLop_Kieu";
 
-  static Widget _xayDungLopTruot(BuildContext context, Widget mucTieu, AnimationController dieuKhien, Offset toaDoBatDau) {
-    final Animation<Offset> toaDo = Tween<Offset>(
-      begin: toaDoBatDau,
-      end: Offset.zero
-    ).animate(dieuKhien);
-    return SlideTransition(
-      position: toaDo,
-      child: mucTieu,
-    );
-  }
-
-  /// Xây dựng Widget hoạt hình trượt xuống
-  static Widget xayDungLopTruotXuong(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
-   => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(0, -1.0));
-  /// Xây dựng Widget hoạt hình trượt lên
-  static Widget xayDungLopTruotLen(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
-   => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(0, 1.0));
-  /// Xây dựng Widget hoạt hình trượt trái sang phải
-  static Widget xayDungLopTruotTraiSangPhai(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
-   => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(-1.0, 0));
-  /// Xây dựng Widget hoạt hình trượt phải sang trái
-  static Widget xayDungLopTruotPhaiSangTrai(BuildContext context, Widget mucTieu, AnimationController dieuKhien)
-   => _xayDungLopTruot(context, mucTieu, dieuKhien, const Offset(1.0, 0));
-  /// Xây dựng Widget hoạt hình theo độ mờ (độ trong suốt)
-  static Widget xayDungLopDoMo(BuildContext context, Widget mucTieu, AnimationController dieuKhien) {
-    final Animation<double> doMo = Tween<double>(
-      begin: 0,
-      end: 1.0
-    ).animate(dieuKhien);
-    return FadeTransition(
-      opacity: doMo,
-      child: mucTieu
-    );
-  }
-  /// Xây dựng Widget hoạt hình theo kích thước (zoom/scale)
-  static Widget xayDungLopThuPhong(BuildContext context, Widget mucTieu, AnimationController dieuKhien) {
-    final Animation<double> doThuPhong = Tween<double>(
-      begin: 0,
-      end: 1.0
-    ).animate(CurvedAnimation(
-      parent: dieuKhien,
-      curve: Curves.easeInOutBack)
-    );
-    return ScaleTransition(
-      scale: doThuPhong,
-      child: mucTieu
-    );
-  }
-
   /// Độ dài hoạt hình chuyển động
   final Duration doDaiHoatHinh;
   /// Cho phép chạm khi đang chuyển động hoạt hình
   final bool choPhepChamKhiChuyenDongHoatHinh;
   /// Hoạt hình mặc định
-  final WidgetLuongXepLopXayDungLop? hoatHinh;
+  final XayDungWidgetHieuUngChuyenDong? hoatHinh;
 
   const WidgetLuongManHinhXepLop({
     super.key,
@@ -198,15 +148,15 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
       choPhepHoatHinh = false;
     }
 
-    WidgetLuongXepLopXayDungLop? hoatHinh;
+    XayDungWidgetHieuUngChuyenDong? hoatHinh;
     if (choPhepHoatHinh) {
       hoatHinh = widget.hoatHinh;
       temp = (laThemMoi ? thamSoDk.manHinhMoi : thamSoDk.manHinhCu)?.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinh];
-      if (temp is WidgetLuongXepLopXayDungLop) {
+      if (temp is XayDungWidgetHieuUngChuyenDong) {
           hoatHinh = temp;
       }
       temp = thamSoDk.thamSoDieuKhienThayDoiManHinh?[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinh];
-      if (temp is WidgetLuongXepLopXayDungLop) {
+      if (temp is XayDungWidgetHieuUngChuyenDong) {
           hoatHinh = temp;
       }
     }

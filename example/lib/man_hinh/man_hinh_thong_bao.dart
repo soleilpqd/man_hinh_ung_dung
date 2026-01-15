@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:man_hinh_ung_dung/man_hinh_ung_dung.dart';
 import 'package:man_hinh_ung_dung/widget_luong_man_hinh_xep_lop.dart';
+import 'package:man_hinh_ung_dung/xay_dung_widget_hoat_hinh.dart';
 
 class DieuKhienManHinhThongBao extends DieuKhienManHinh {
 
@@ -10,7 +11,7 @@ class DieuKhienManHinhThongBao extends DieuKhienManHinh {
   DieuKhienManHinhThongBao({required this.noiDung, this.hanhDong}) {
     mauNenWidgetChua = Colors.black.withAlpha(128);
     thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoLopTrong] = true;
-    thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinh] = WidgetLuongManHinhXepLop.xayDungLopDoMo;
+    thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinh] = xayDungLopDoMo;
   }
 
   @override
@@ -54,7 +55,7 @@ class _ManHinhThongBao extends StatelessWidget { // WidgetCuaDieuKhienManHinh<Di
       )
     );
     if (dkChuyenDong != null) {
-      return WidgetLuongManHinhXepLop.xayDungLopThuPhong(context, viewChinh, dkChuyenDong!);
+      return xayDungLopThuPhong(context, viewChinh, dkChuyenDong!);
     }
     return viewChinh;
   }
