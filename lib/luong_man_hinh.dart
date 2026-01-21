@@ -80,32 +80,6 @@ class LuongManHinh extends DieuKhienManHinh {
   final List<MucTrongLuongManHinh> _danhSachManHinh = [];
   MucTrongLuongManHinh? _manHinhHienTai;
 
-  bool _dangCapNhat = false;
-  final List<void Function()> _hangDoiCapNhat = [];
-
-  bool _kiemTraDangCapNhat() {
-    if (_dangCapNhat) {
-      return true;
-    }
-    for (final muc in _danhSachManHinh) {
-      if (muc.manHinh is LuongManHinh) {
-        final LuongManHinh luongCon = muc.manHinh as LuongManHinh;
-        if (luongCon._kiemTraDangCapNhat()) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  void _luongConDaCapNhatXong(LuongManHinh luongCon) {
-    if (_hangDoiCapNhat.isNotEmpty) {
-      _dayHangDoiCapNhat();
-    } else {
-      luongManHinh?._luongConDaCapNhatXong(luongCon);
-    }
-  }
-
   // Các APIs để khởi tạo widget cho luồng màn hình
   List<MucTrongLuongManHinh> get dsManHinhThuocLuong => _danhSachManHinh.toList();
   MucTrongLuongManHinh? get manHinhHienTaiCuaLuong => _manHinhHienTai;
@@ -120,6 +94,7 @@ class LuongManHinh extends DieuKhienManHinh {
   /// - [thamSo]: tham số điều khiển widget của luồng màn hình hiện tại
   /// - [khiHoanThanh]: hành động khi thay đổi xong màn hình
   void ganManHinhHienTai({required int stt, ThamSoDieuKhienWidgetManHinh? thamSo, void Function()? khiHoanThanh}) {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     MucTrongLuongManHinh? mhht = _manHinhHienTai;
     if (stt >= 0 && stt < _danhSachManHinh.length) {
       mhht = _danhSachManHinh[stt];
@@ -156,6 +131,7 @@ class LuongManHinh extends DieuKhienManHinh {
   /// - [thamSo]: tham số điều khiển widget của luồng màn hình hiện tại
   /// - [khiHoanThanh]: hành động khi thay đổi xong màn hình
   void ganDanhSachManHinh({required List<DieuKhienManHinh> danhSachMoi, int? thuTuManHinhHienTaiMoi, ThamSoDieuKhienWidgetManHinh? thamSo, void Function()? khiHoanThanh}) {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     List<MucTrongLuongManHinh> dsMoi = [];
     for (final DieuKhienManHinh manHinhMoi in danhSachMoi) {
       MucTrongLuongManHinh muc;
@@ -243,30 +219,6 @@ class LuongManHinh extends DieuKhienManHinh {
     ThamSoDieuKhienWidgetManHinh? thamSo,
     void Function()? khiHoanThanh
   ) {
-    _hangDoiCapNhat.add(() {
-      _thucHienNapLai(manHinhCu, manHinhMoi, cacManHinhBiLoaiBo, thamSo, khiHoanThanh);
-    });
-    _dayHangDoiCapNhat();
-  }
-
-  void _dayHangDoiCapNhat() {
-    if (_hangDoiCapNhat.isEmpty) {
-      return;
-    }
-    if (!_kiemTraDangCapNhat()) {
-      final hanhDong = _hangDoiCapNhat.removeAt(0);
-      hanhDong.call();
-    }
-  }
-
-  void _thucHienNapLai(
-    MucTrongLuongManHinh? manHinhCu,
-    MucTrongLuongManHinh? manHinhMoi,
-    List<MucTrongLuongManHinh>? cacManHinhBiLoaiBo,
-    ThamSoDieuKhienWidgetManHinh? thamSo,
-    void Function()? khiHoanThanh
-  ) {
-    _dangCapNhat = true;
     // print("NAP LAI ${manHinhCu?.manHinh.tuMieuTa()} => ${manHinhMoi?.manHinh.tuMieuTa()}; $trangThai");
     manHinhCu?.manHinh.manHinhSeThoiLamManHinhChinhTrongLuong();
     manHinhMoi?.manHinh.manHinhSeThanhManHinhChinhTrongLuong();
@@ -282,18 +234,16 @@ class LuongManHinh extends DieuKhienManHinh {
       manHinhCu?.manHinh.manHinhDaThoiLamManHinhChinhTrongLuong();
       manHinhMoi?.manHinh.manHinhDaThanhManHinhChinhTrongLuong();
       khiHoanThanh?.call();
-      _dangCapNhat = false;
-      luongManHinh?._luongConDaCapNhatXong(this);
     }
 
-    final ThamSoDieuKhienWidgetLuongManHinh thamSoDK = ThamSoDieuKhienWidgetLuongManHinh(
-      hoatTatThayDoi: hanhDongKhiXong,
-      danhSachManHinh: _danhSachManHinh.toList(),
-      manHinhMoi: manHinhMoi,
-      manHinhCu: manHinhCu,
-      thamSoDieuKhienThayDoiManHinh: thamSo
-    );
     if (trangThaiWidgetManHinh != null) {
+      final ThamSoDieuKhienWidgetLuongManHinh thamSoDK = ThamSoDieuKhienWidgetLuongManHinh(
+        hoatTatThayDoi: hanhDongKhiXong,
+        danhSachManHinh: _danhSachManHinh.toList(),
+        manHinhMoi: manHinhMoi,
+        manHinhCu: manHinhCu,
+        thamSoDieuKhienThayDoiManHinh: thamSo
+      );
       trangThaiWidgetManHinh!.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {kKeyThamSoDieuKhienWidgetLuongMH: thamSoDK});
       final String mieuTa = "Trạng thái Widget $trangThaiWidgetManHinh của luồng màn hình ${tuMieuTa()} cần gọi hàm theo key `KeyThamSoDieuKhienWidgetKhiHoanTatCapNhat` khi cập nhật màn hình xong (giới hạn 1s)";
       Future.delayed(const Duration(seconds: 1)).then((value) {
@@ -301,6 +251,14 @@ class LuongManHinh extends DieuKhienManHinh {
           throw Exception(mieuTa);
         }
       });
+      if (_kiemThuWidget.contains(now)) {
+        // State Widget ko gọi `hoanTatThayDoi` ngay trong hàm `capNhatGiaoDienCuaManHinh`
+        // thì cần xử lý hoàn tất ngay theo mixin TrangThaiWidgetManHinhCoHieuUng
+        if (trangThaiWidgetCoHieuUng == null) {
+          final String mieuTa = "Trạng thái Widget $trangThaiWidgetManHinh của luồng màn hình ${tuMieuTa()} cần triển khai mixin `TrangThaiWidgetManHinhCoHieuUng`.";
+          throw Exception(mieuTa);
+        }
+      }
     } else {
       hanhDongKhiXong();
     }
@@ -311,6 +269,7 @@ class LuongManHinh extends DieuKhienManHinh {
   /// - [thamSo]: tham số điều khiển widget của luồng màn hình hiện tại
   /// - [khiHoanThanh]: hành động khi thay đổi xong màn hình
   void themManHinh({required DieuKhienManHinh manHinh, bool hienThiLuon = true, ThamSoDieuKhienWidgetManHinh? thamSo, void Function()? khiHoanThanh}) {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     bool daCo = false;
     try {
       final MucTrongLuongManHinh _ = _danhSachManHinh.firstWhere((phanTu) => phanTu.manHinh == manHinh);
@@ -354,6 +313,7 @@ class LuongManHinh extends DieuKhienManHinh {
   /// - [thamSo]: tham số điều khiển widget của luồng màn hình hiện tại
   /// - [khiHoanThanh]: hành động khi thay đổi xong màn hình
   void loaiManHinhTaiThuTu({int? soThuTu, int? sttHienTaiMoi, ThamSoDieuKhienWidgetManHinh? thamSo, void Function()? khiHoanThanh}) {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     int stt = soThuTu ?? _danhSachManHinh.length - 1;
     if (stt < 0) {
       throw Exception("Không loại bỏ được màn hình vì luồng màn hình ${tuMieuTa()} đang rỗng");
@@ -404,6 +364,7 @@ class LuongManHinh extends DieuKhienManHinh {
     if (soThuTu < 0) {
       throw Exception("Chỉ số không đúng: $soThuTu");
     }
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     List<MucTrongLuongManHinh> dsMhBiLoai = [];
     while (_danhSachManHinh.length > soThuTu + 1) {
       MucTrongLuongManHinh mhBiLoai = _danhSachManHinh.removeLast();
@@ -437,6 +398,7 @@ class LuongManHinh extends DieuKhienManHinh {
 
   @override
   void manHinhBiLoaiBoKhoiLuong() {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     List<MucTrongLuongManHinh> nhanBan = _danhSachManHinh.toList();
     for (final muc in nhanBan) {
       muc.manHinh.luongManHinhBiLoaiKhoiLuong(this);

@@ -129,7 +129,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
       (luongManHinh as LuongManHinhCuaToi).dinhDanh == DinhDanhLuongManHinh.luong1 &&
       luongManHinh!.danhSachManHinh.length == 2
     ) {
-      _khiNhanThongBao();
+      Future.delayed(const Duration(milliseconds: 100)).then((value) => _khiNhanThongBao());
     }
   }
 
@@ -237,7 +237,7 @@ class DieuKhienManHinhNoiDung extends DieuKhienManHinh {
   }
 
   void khiNhanNutMenuThaXuong(String muc) {
-    print("MENU $muc");
+    print("MENU $muc / ${tuMieuTa()}");
   }
 
   void khiNhanNutKhoaManHinh() {

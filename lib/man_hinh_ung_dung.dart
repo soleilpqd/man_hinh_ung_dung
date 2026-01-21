@@ -33,15 +33,14 @@ mixin TrangThaiWidgetManHinh {
   /// Nạp lại
   /// - [dieuKhienManHinh]: điều khiển màn hình yêu cầu nạp lại giao diện.
   /// - [duLieuDinhKem]: dữ liệu đính kèm (tuỳ ý)
-  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
-    throw Exception("Cần khai báo ở class kế thừa (không cần gọi super)");
-  }
+  void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem});
+}
 
-  /// Trạng thái hiện tại đã bị thay thế bằng 1 trạng thái khác
-  void daBiThayThe() {
-
-  }
-
+/// Trạng thái widget của màn hình (có hoạt hình khi cập nhật giao diện)
+mixin TrangThaiWidgetManHinhCoHieuUng {
+  /// Hoàn thành việc cập nhật giao diện màn hình ngay
+  /// - [dieuKhienManHinh]: điều khiển màn hình yêu cầu nạp lại giao diện.
+  void hoanThanhCapNhatGiaoDienCuaManHinhNgay({required DieuKhienManHinh dieuKhienManHinh});
 }
 
 mixin ThongTinLapTrinh {
@@ -111,9 +110,18 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   TrangThaiWidgetManHinh? get trangThaiWidgetManHinh => _trangThaiWidgetManHinh;
   set trangThaiWidgetManHinh(TrangThaiWidgetManHinh? trangThaiMoi) {
     if (_trangThaiWidgetManHinh != trangThaiMoi) {
-      _trangThaiWidgetManHinh?.daBiThayThe();
+      trangThaiWidgetCuaManHinhSeThayDoi(trangThaiMoi);
+      TrangThaiWidgetManHinh? trangThaiCu = _trangThaiWidgetManHinh;
       _trangThaiWidgetManHinh = trangThaiMoi;
+      trangThaiWidgetCuaManHinhDaThayDoi(trangThaiCu);
     }
+  }
+  /// `TrangThaiWidgetManHinhCoHieuUng` là mở rộng của `TrangThaiWidgetManHinh`
+  TrangThaiWidgetManHinhCoHieuUng? get trangThaiWidgetCoHieuUng {
+    if (_trangThaiWidgetManHinh is TrangThaiWidgetManHinhCoHieuUng) {
+      return _trangThaiWidgetManHinh as TrangThaiWidgetManHinhCoHieuUng;
+    }
+    return null;
   }
   /// Tham số điều khiển gán cho Widget của luồng màn hình chứa màn hình hiện tại
   ThamSoDieuKhienWidgetManHinh thamSoDieuKhienWidgetLuong = {};
@@ -128,6 +136,7 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   /// Màn hình bị loại bỏ khỏi luồng màn hình
   /// Mặc định xoá bỏ widgetManHinh và trangThaiWidgetManHinh.
   void manHinhBiLoaiBoKhoiLuong() {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
     trangThaiWidgetManHinh = null;
   }
 
@@ -166,6 +175,14 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   /// luồng chứa sẽ truyền sự kiện xuống cho màn hình/luồng con
   /// - [luong]: luồng màn hình xảy ra sự kiện (có thể là luồng chứa màn hình hiện tại hoặc luồng cao hơn)
   void luongManHinhDaThoiLamManHinhChinhTrongLuong(LuongManHinh luong) {}
+
+  /// State của StatefulWidget của màn hình sẽ được gán giá trị mới
+  void trangThaiWidgetCuaManHinhSeThayDoi(TrangThaiWidgetManHinh? trangThaiMoi) {
+    trangThaiWidgetCoHieuUng?.hoanThanhCapNhatGiaoDienCuaManHinhNgay(dieuKhienManHinh: this);
+  }
+
+  /// State của StatefulWidget của màn hình đã được gán giá trị mới
+  void trangThaiWidgetCuaManHinhDaThayDoi(TrangThaiWidgetManHinh? trangThaiCu) {}
 
   /// Kiểm tra đệ quy xem màn hình hiện tại có là màn hình chính trong luồng và luồng chứa cũng là màn hình chính.
   /// Trả lại null nếu màn hình hiện tại ko thuộc luồng nào.

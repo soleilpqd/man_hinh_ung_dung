@@ -71,7 +71,7 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
 
 }
 
-class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<WidgetLuongManHinhXepLop> with SingleTickerProviderStateMixin {
+class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<WidgetLuongManHinhXepLop> with SingleTickerProviderStateMixin, TrangThaiWidgetManHinhCoHieuUng {
 
   bool _daKhoiTao = false;
 
@@ -103,7 +103,7 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
   }
 
   @override
-  void daBiThayThe() {
+  void hoanThanhCapNhatGiaoDienCuaManHinhNgay({required DieuKhienManHinh dieuKhienManHinh}) {
     _dkChuyenDongHoatHinh.stop();
     _hoanTatCapNhat?.call();
     _hoanTatCapNhat = null;
@@ -111,9 +111,6 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
 
   @override
   void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
-    _dkChuyenDongHoatHinh.stop();
-    _hoanTatCapNhat?.call();
-    _hoanTatCapNhat = null;
     _dsMhCanHienThi.clear();
     _lopHoatHinh = null;
 

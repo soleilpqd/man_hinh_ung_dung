@@ -11,6 +11,8 @@ Xây dựng ứng dụng Flutter theo mô hình thiết kế MVC.
 
 Gói `Màn hình ứng dụng` này tập trung chủ yếu vào xây dựng phần điều khiển **Controller** và 1 góc phần nhìn **View** cho ứng dụng Flutter trên điện thoại (iOS/Android).
 
+> Phần **Controller** là riêng biệt với **View**, trong khi đó Widget và State của widget thuộc phần **View**, nên tính năng Hot Reload của Flutter có thể hoạt động không như mọng đợi khi sửa code ở **Controller**.
+
 ## II. Thiết kế chi tiết dự án:
 
 - Chia ứng dụng thành các màn hình.
@@ -159,6 +161,10 @@ Việc cần triển khai chủ yếu của luồng màn hình là tạo (hoặc
 - Vì luồng màn hình xử lý việc thay đổi màn hình nên widget của nó phải là `StatefulWidget`.
 - Tạo 1 class `StatefulWidget` làm widget cho luồng màn hình theo miêu tả tạo widget cho màn hình ở trên.
 ```
+class WidgetLuongManHinhCuaToi extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
+  ...
+}
+
 class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<WidgetLuongManHinhCuaToi> {
 
   bool _daKhoiTao = false;
@@ -170,7 +176,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   }
 
   @override
-  void didUpdateWidget(covariant WidgetLuongManHinhTruot oldWidget) {
+  void didUpdateWidget(covariant WidgetLuongManHinhCuaToi oldWidget) {
     super.didUpdateWidget(oldWidget);
     _daKhoiTao = false;
   }
@@ -179,16 +185,10 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     dynamic temp = duLieuDinhKem?[LuongManHinh.kKeyThamSoDieuKhienWidgetLuongMH];
     if (temp is! ThamSoDieuKhienWidgetLuongManHinh) {
-      throw("WidgetLuongManHinhTruot: Điều khiển màn hình không phải là 1 luồng");
+      throw("WidgetLuongManHinhCuaToi: Điều khiển màn hình không phải là 1 luồng");
     }
     final ThamSoDieuKhienWidgetLuongManHinh thamSoDk = temp;
     ...
-  }
-
-  void daBiThayThe() {
-    // Trạng thái widget hiện tại đã bị thay thế bởi 1 trạngt thái khác trong điều khiển màn hình
-    // Chỗ này cần kết thúc các thao tác dở trước để chuyển giao lại cho trạng thái mới
-    // VD: dừng hoạt hình và gọi hàm hoàn thành cập nhật luồng
   }
 
   @override
@@ -210,7 +210,22 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   - `manHinhCu`: mục màn hình hiển thị trước đó. Có thể `null`. Mục này có thể nằm trong `danhSachManHinh` (ví dụ di chuyển màn hình từ màn hình thứ tự lớn về màn hình thứ tự nhỏ), hoặc có thể không (màn hình bị loại ra khỏi luồng).
   - `danhSachManHinh`: danh sách tất cả các màn hình hiện tại của luồng (sau khi thay đổi).
   - `hoatTatThayDoi`: hàm này bắt buộc phải gọi sau khi hoàn tất di chuyển widget màn hình. Giới hạn 1s (sau 1s mà hàm này không được gọi thì sẽ báo exception).
-- Hàm `daBiThayThe`: nếu vẫn đang trong quá trình hoạt hình thì cần dừng lại, và gọi hàm từ `hoatTatThayDoi` để hoàn tất logic cập nhật.
+- State của StatefuleWidget của luồng màn hình có thể triển khai mixin `TrangThaiWidgetManHinhCoHieuUng` (trường hợp `hoatTatThayDoi` được gọi sau (bên ngoài) hàm `capNhatGiaoDienCuaManHinh` thì là bắt buộc):
+  ```
+  class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<WidgetLuongManHinhCuaToi> with TrangThaiWidgetManHinhCoHieuUng {
+    @override
+    void hoanThanhCapNhatGiaoDienCuaManHinhNgay({required DieuKhienManHinh dieuKhienManHinh}) {
+      // Dừng hiệu ứng hoạt hình
+      // Gọi đến `hoatTatThayDoi`
+      ...
+    }
+  }
+  ```
+  - Mục đính chính là kết thúc các thao tác đang thực hiện dở do hiệu ứng hoạt hình ngay để chuyển sang các thao tác mới.
+  - Hàm này được gọi tới khi:
+    - Điều khiển luồng màn hình thay đổi (thêm, bỏ màn hình).
+    - Bản thân luòng màn hình bị loại khỏi luồng chứa nó.
+    - State của widget của luồng màn hình thay đổi (object state cũ sẽ được gọi hàm này trước khi object state mới được gán mới - tức là trong hàm `trangThaiWidgetCuaManHinhSeThayDoi` của luồng màn hình sẽ gọi đến hàm này).
 
 ### III.3. Kết hợp màn hình và luồng màn hình:
 
@@ -261,6 +276,8 @@ class MyApp extends StatelessWidget {
   - `luongManHinhSeThoiLamManHinhChinhTrongLuong(LuongManHinh luong)`
   - `manHinhDaThoiLamManHinhChinhTrongLuong()`
   - `luongManHinhDaThoiLamManHinhChinhTrongLuong(LuongManHinh luong)`
+  - `trangThaiWidgetCuaManHinhSeThayDoi(TrangThaiWidgetManHinh? trangThaiCu)`
+  - `trangThaiWidgetCuaManHinhDaThayDoi(TrangThaiWidgetManHinh? trangThaiCu)`
 > Chi tiết xem chú thích trong source code.
 - Quản lý vòng đời của `DieuKhienManHinh`:
   - 1 object `DieuKhienManHinh` chỉ nên thêm vào trong 1 luồng. Nhiều luồng cùng chứa 1 object `DieuKhienManHinh` có thể chạy sai logic.
