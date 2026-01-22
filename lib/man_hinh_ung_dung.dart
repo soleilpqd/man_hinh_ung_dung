@@ -82,6 +82,13 @@ abstract class TrangThaiWidgetCuaDieuKhien<T extends WidgetCuaDieuKhienManHinh >
     }
   }
 
+  /// setState trong try catch (cho các trường hợp không xác định state còn active hay không)
+  void trySetState({void Function()? action}) {
+    try {
+      setState(() => action?.call());
+    } catch (_) {}
+  }
+
 }
 
 /// Điều khiển màn hình

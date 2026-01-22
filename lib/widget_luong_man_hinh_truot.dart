@@ -147,9 +147,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
 
   @override
   void hoanThanhCapNhatGiaoDienCuaManHinhNgay({required DieuKhienManHinh dieuKhienManHinh}) {
-    _dkChuyenDongHoatHinh.stop();
-    _hoanTatCapNhat?.call();
-    _hoanTatCapNhat = null;
+    _dkChuyenDongHoatHinh.stop(canceled: false);
   }
 
   @override
@@ -200,7 +198,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
     if (hoatHinh) {
       _dkChuyenDongHoatHinh.forward(from: _dkChuyenDongHoatHinh.lowerBound).then((value) {
         _manHinhCu = null;
-        setState(() {});
+        trySetState();
         _hoanTatCapNhat?.call();
         _hoanTatCapNhat = null;
       });
@@ -232,7 +230,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
         ]
       ));
     }
-    return _manHinhCanHienThi ?? Container(color: Colors.white.withAlpha(0));
+    return _manHinhCanHienThi ?? Container(color: widget.dieuKhienManHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0));
   }
 
 }

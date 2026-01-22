@@ -33,15 +33,19 @@ class MucTrongLuongManHinh {
 
   ValueKey<int> key;
   final DieuKhienManHinh manHinh;
+  Container? _container;
 
   MucTrongLuongManHinh({required this.key, required this.manHinh});
 
   /// Tạo Widget container chứa
-  Container taoContainer(BuildContext context, Map<String, dynamic>? thamSo) => Container(
-    key: key,
-    color: manHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0),
-    child: manHinh.xayDungGiaoDienNguoiDung(context, thamSo)
-  );
+  Container taoContainer(BuildContext context, Map<String, dynamic>? thamSo) {
+    _container ??= Container(
+      key: key,
+      color: manHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0),
+      child: manHinh.xayDungGiaoDienNguoiDung(context, thamSo)
+    );
+    return _container!;
+  }
 
 }
 
