@@ -33,7 +33,7 @@ class LuongManHinhCuaToi extends LuongManHinh {
 
   final DinhDanhLuongManHinh dinhDanh;
 
-  LuongManHinhCuaToi({required this.dinhDanh});
+  LuongManHinhCuaToi({required this.dinhDanh}) : super(laManHinhGoc: dinhDanh == DinhDanhLuongManHinh.goc);
 
   @override
   String tuMieuTa() {

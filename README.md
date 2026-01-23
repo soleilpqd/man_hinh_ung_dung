@@ -209,7 +209,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
   - `manHinhMoi`: mục màn hình cần được hiển thị. Có thể `null` (không có màn hình nào được hiển thị nữa). Mục này thì chắc chắn nằm trong `danhSachManHinh`.
   - `manHinhCu`: mục màn hình hiển thị trước đó. Có thể `null`. Mục này có thể nằm trong `danhSachManHinh` (ví dụ di chuyển màn hình từ màn hình thứ tự lớn về màn hình thứ tự nhỏ), hoặc có thể không (màn hình bị loại ra khỏi luồng).
   - `danhSachManHinh`: danh sách tất cả các màn hình hiện tại của luồng (sau khi thay đổi).
-  - `hoatTatThayDoi`: hàm này bắt buộc phải gọi sau khi hoàn tất di chuyển widget màn hình. Giới hạn 1s (sau 1s mà hàm này không được gọi thì sẽ báo exception).
+  - `hoatTatThayDoi`: hàm này bắt buộc phải gọi sau khi hoàn tất di chuyển widget màn hình. Giới hạn 3s (sau 3s mà hàm này không được gọi thì sẽ báo exception).
 - State của StatefuleWidget của luồng màn hình có thể triển khai mixin `TrangThaiWidgetManHinhCoHieuUng` (trường hợp `hoatTatThayDoi` được gọi sau (bên ngoài) hàm `capNhatGiaoDienCuaManHinh` thì là bắt buộc):
   ```
   class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<WidgetLuongManHinhCuaToi> with TrangThaiWidgetManHinhCoHieuUng {

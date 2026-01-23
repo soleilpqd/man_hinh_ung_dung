@@ -81,6 +81,8 @@ class LuongManHinh extends DieuKhienManHinh {
 
   static const kKeyThamSoDieuKhienWidgetLuongMH = "_luong";
 
+  LuongManHinh({super.laManHinhGoc});
+
   final List<MucTrongLuongManHinh> _danhSachManHinh = [];
   MucTrongLuongManHinh? _manHinhHienTai;
 
@@ -250,7 +252,7 @@ class LuongManHinh extends DieuKhienManHinh {
       );
       trangThaiWidgetManHinh!.capNhatGiaoDienCuaManHinh(dieuKhienManHinh: this, duLieuDinhKem: {kKeyThamSoDieuKhienWidgetLuongMH: thamSoDK});
       final String mieuTa = "Trạng thái Widget $trangThaiWidgetManHinh của luồng màn hình ${tuMieuTa()} cần gọi hàm theo key `KeyThamSoDieuKhienWidgetKhiHoanTatCapNhat` khi cập nhật màn hình xong (giới hạn 1s)";
-      Future.delayed(const Duration(seconds: 1)).then((value) {
+      Future.delayed(const Duration(seconds: 3)).then((value) {
         if (_kiemThuWidget.contains(now)) {
           throw Exception(mieuTa);
         }

@@ -30,6 +30,15 @@ import 'package:man_hinh_ung_dung/luong_man_hinh.dart';
 
 /// Trạng thái widget của màn hình
 mixin TrangThaiWidgetManHinh {
+
+  bool _khaDung = false;
+  /// `false` nếu trạng thái widget này không gắn với điều khiển màn hình nào
+  bool get khaDung => _khaDung;
+  /// Hàm xử lý bởi điều khiển màn hình, không dùng trực tiếp.
+  set khaDung(bool giaTri) {
+    _khaDung = giaTri;
+  }
+
   /// Nạp lại
   /// - [dieuKhienManHinh]: điều khiển màn hình yêu cầu nạp lại giao diện.
   /// - [duLieuDinhKem]: dữ liệu đính kèm (tuỳ ý)
@@ -82,17 +91,26 @@ abstract class TrangThaiWidgetCuaDieuKhien<T extends WidgetCuaDieuKhienManHinh >
     }
   }
 
-  /// setState trong try catch (cho các trường hợp không xác định state còn active hay không)
+  /// setState trong try catch + điều kiện state khả dụng && là màn hình chính trong luồng
+  /// (cho các trường hợp không xác định state còn active hay không)
   void trySetState({void Function()? action}) {
-    try {
-      setState(() => action?.call());
-    } catch (_) {}
+    if (khaDung && (widget.dieuKhienManHinh.laManHinhChinhTrongLuong() ?? true)) {
+      try {
+        setState(() => action?.call());
+      } catch (_) {}
+    }
   }
 
 }
 
 /// Điều khiển màn hình
 class DieuKhienManHinh with ThongTinLapTrinh {
+
+  /// (Luồng) Màn hình gốc
+  /// Sử dụng cho hàm `laManHinhChinhTrongLuong` => dừng đệ quy ở màn hình gốc
+  final bool laManHinhGoc;
+
+  DieuKhienManHinh({this.laManHinhGoc = false});
 
   /// Widget của điều khiển màn hình (mặc định trả lại trong hàm `xayDungGiaoDienNguoiDung`)
   Widget? widgetCuaManHinh;
@@ -117,9 +135,11 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   TrangThaiWidgetManHinh? get trangThaiWidgetManHinh => _trangThaiWidgetManHinh;
   set trangThaiWidgetManHinh(TrangThaiWidgetManHinh? trangThaiMoi) {
     if (_trangThaiWidgetManHinh != trangThaiMoi) {
+      _trangThaiWidgetManHinh?.khaDung = false;
       trangThaiWidgetCuaManHinhSeThayDoi(trangThaiMoi);
       TrangThaiWidgetManHinh? trangThaiCu = _trangThaiWidgetManHinh;
       _trangThaiWidgetManHinh = trangThaiMoi;
+      _trangThaiWidgetManHinh?.khaDung = true;
       trangThaiWidgetCuaManHinhDaThayDoi(trangThaiCu);
     }
   }
@@ -194,6 +214,9 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   /// Kiểm tra đệ quy xem màn hình hiện tại có là màn hình chính trong luồng và luồng chứa cũng là màn hình chính.
   /// Trả lại null nếu màn hình hiện tại ko thuộc luồng nào.
   bool? laManHinhChinhTrongLuong() {
+    if (laManHinhGoc) {
+      return true;
+    }
     if (luongManHinh != null) {
       bool ketQua = luongManHinh!.manHinhHienTai == this;
       bool? ketQuaLuong = luongManHinh!.laManHinhChinhTrongLuong();
