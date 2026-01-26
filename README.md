@@ -233,7 +233,7 @@ class TrangThaiWidgetLuongManHinhCuaToi extends TrangThaiWidgetCuaDieuKhien<Widg
 ```
 class MyApp extends StatelessWidget {
 
-  final LuongManHinhCuaToi luongMHGoc = LuongManHinh();
+  final LuongManHinhCuaToi luongMHGoc = LuongManHinh(laManHinhGoc: true);
 
   MyApp({super.key}) {
     // Gán widget cho luồng gốc, thêm các màn hình/luồng màn hình ban đầu vào cho luồng màn hình gốc
@@ -285,6 +285,12 @@ class MyApp extends StatelessWidget {
   - Trong hàm `manHinhBiLoaiBoKhoiLuong` thì xử lý tương tự như hàm `dispose` của Flutter: loại bỏ các kết nối (listener, observer ...). Object `DieuKhienManHinh` sau thời điểm của hàm này thì không sử dụng nữa.
   - Mặc định hàm `manHinhBiLoaiBoKhoiLuong` của `DieuKhienManHinh` xoá bỏ kết nối đến `trangThaiWidgetManHinh`. Hàm `manHinhBiLoaiBoKhoiLuong` của `LuongManHinh` đồng thời cũng sẽ loại bỏ các màn hình con của nó (để đảm bảo các màn hình con cũng nhận được sự kiện `manHinhBiLoaiBoKhoiLuong`). Các hàm như `manHinhDuocThemVaoLuong`, ... của `LuongManHinh` sẽ gọi tiếp vào các hàm tương ứng `luongManHinhDuocThemVaoLuong`, ... của các màn con.
   - Vì vậy khi subclass `DieuKhienManHinh` và `LuongManHinh` cần chú ý gọi `super...` nếu override các hàm sự kiện ở trên.
+- Mối quan hệ giữa `DieuKhienManHinh`, StatefulWidget của nó và State của widget:
+  - State được tạo và quản lý bởi Flutter framework. State được tạo khi widget được hiển thị lên màn hình.
+  - Do đó `DieuKhienManHinh` tại 1 thời điểm nào đó có thể không có object State đính kèm hoặc State đính kèm của nó không còn sử dụng được (không nằm trong BuildContext nữa): ví dụ lúc khởi tạo, lúc widget của nó không được hiển thị lên ... .
+  - Object State của widget cũng có thể thay đổi: ví dụ khi widget được ẩn đi sau đó lại được hiển thị lên (di chuyển màn hình), widget có thể được gán 1 object state mới.
+  - Vì vậy trong các class State của các StatefulWidget của `DieuKhienManHinh`, có thể kiểm tra thuộc tính `khaDung` của object State hiện tại và `widget.dieuKhienManHinh.laManHinhChinhTrongLuong()` trước khi `setState` để tránh lỗi.
+
 ## Giấy phép:
 
 MIT (xem [License](./LICENSE))
