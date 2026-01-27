@@ -25,7 +25,7 @@ SOFTWARE.
 import 'package:flutter/material.dart';
 
 /// Tạo lớp thực thi hiệu ứng hoạt hình
-typedef XayDungWidgetHieuUngChuyenDong = Widget Function(BuildContext, Container, AnimationController);
+typedef XayDungWidgetHieuUngChuyenDong = Widget Function(BuildContext, Widget, AnimationController);
 
 // -- Hàm dựng sẵn
 

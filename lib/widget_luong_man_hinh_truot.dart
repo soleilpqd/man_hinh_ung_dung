@@ -42,10 +42,15 @@ enum PhuongHuongLuongManHinhTruot {
 /// Chỉ hiện thị màn hình hiện tại của luồng. Tham số điều khiển chuyển động hoạt hình `kKeyThamSoHoatHoa`.
 class WidgetLuongManHinhTruot extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
 
+  // -- Key tham số truyền vào cho WidgetLuongManHinhTruot
+
   /// Tham số điều khiển có thực hiện chuyển động hoạt hoạ khi thay đổi màn hình hay không.
   /// Sử dụng làm tham số trong các hàm thay đổi màn hình của luồng màn hình.
   /// Kiểu dữ liệu: `bool`.
   static const String kKeyThamSoHoatHoa = "WidgetLuongTruot_Anim";
+
+  // -- Key tham số WidgetLuongManHinhTruot truyền cho màn hình hiện tại
+
   /// Điều khiển hoạt hình (nếu có) khi áp dụng hiệu ứng chuyển động chuyển màn hình.
   /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
   /// Kiểu dữ liệu: `AnimationController`.
@@ -213,7 +218,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
     if (!_daKhoiTao) {
       _daKhoiTao = true;
       _manHinhCanHienThi = widget.dieuKhienManHinh.manHinhHienTaiCuaLuong?.taoContainer(context, null);
-      return _manHinhCanHienThi ?? Container(color: Colors.white.withAlpha(0));
+      return _manHinhCanHienThi ?? Container(color: Colors.transparent);
     }
     if (_manHinhCu != null && _manHinhCanHienThi != null) {
       return IgnorePointer(
@@ -230,7 +235,7 @@ class _TrangThaiWidgetLuongManHinhTruot extends TrangThaiWidgetCuaDieuKhien<Widg
         ]
       ));
     }
-    return _manHinhCanHienThi ?? Container(color: widget.dieuKhienManHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0));
+    return _manHinhCanHienThi ?? Container(color: widget.dieuKhienManHinh.mauNenWidgetChua ?? Colors.transparent);
   }
 
 }

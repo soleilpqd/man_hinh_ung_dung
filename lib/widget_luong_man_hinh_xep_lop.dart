@@ -23,13 +23,24 @@ SOFTWARE.
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:man_hinh_ung_dung/luong_man_hinh.dart';
 import 'package:man_hinh_ung_dung/man_hinh_ung_dung.dart';
 import 'package:man_hinh_ung_dung/xay_dung_widget_hoat_hinh.dart';
 
+/// Kiểu hiệu ứng màu nền
+enum KieuHieuUngMauNen {
+  /// Không
+  khong,
+  /// Chỉ áp dụng hiệu ứng màu nền
+  chiHieuUngMauNen,
+  /// Kết hợp với tham số hoạt hình
+  ketHop
+}
+
 /// Widget cho luồng màn hình, xếp lớp các màn hình con.
 class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
+
+  // -- Key tham số truyền vào cho WidgetLuongManHinhXepLop
 
   /// Kiểu `bool`. Có sử dụng hoạt hình chuyển động hay không. Mặc định là có và tuỳ theo các cấu hình hoạt hình.
   static const String kKeyThamSoChoPhepHoatHinh = "WidgetLuongXepLop_Animable";
@@ -38,10 +49,18 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// cũng như `thamSoDieuKhienThayDoiManHinh` của màn hình cần thay đổi.
   /// Lưu ý: khi thêm màn hình vào luồng thì sẽ chạy hoạt hình `forward`. Khi loại bỏ màn hình thì chạy hoạt hình `backward`.
   static const String kKeyThamSoHoatHinh = "WidgetLuongXepLop_Anim";
+  /// Kiểu `KieuHieuUngMauNen`. Thêm hiệu ứng chuyển màu nền.
+  /// Áp dụng cho `thamSo` trong các hàm thay đổi màn hình của LuongManHinh (ưu tiên cao hơn)
+  /// cũng như `thamSoDieuKhienThayDoiManHinh` của màn hình cần thay đổi.
+  /// Lưu ý: khi thêm màn hình vào luồng thì sẽ chạy hoạt hình `forward`. Khi loại bỏ màn hình thì chạy hoạt hình `backward`.
+  static const String kKeyThamSoHoatHinhMauNen = "WidgetLuongXepLop_Anim_MauNen";
   /// Kiểu `bool`. Áp dụng cho `thamSoDieuKhienThayDoiManHinh` của màn hình.
   /// Mặc định là `false`.
   /// Từ màn hình hiện tại trở về trước, dừng hiển thị nếu màn hình có thuộc tính này `false`.
   static const String kKeyThamSoLopTrong = "WidgetLuongXepLop_Trong";
+
+  // -- Key tham số WidgetLuongManHinhXepLop truyền cho màn hình hiện tại
+
   /// Điều khiển hoạt hình (nếu có) khi áp dụng hiệu ứng chuyển động chuyển màn hình.
   /// Được gán vào `thamSo` trong hàm `xayDungGiaoDienNguoiDung` của màn hình đích.
   /// Kiểu dữ liệu: `AnimationController`.
@@ -107,6 +126,61 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
     _dkChuyenDongHoatHinh.stop(canceled: false);
   }
 
+  Widget _xayDungLopHieuUngMauNen({
+    required BuildContext context,
+    required Map<String, dynamic> thamSoUI,
+    required MucTrongLuongManHinh mucTieu,
+    required Widget viewManHinh
+  }) {
+    final Animation<Color?> anim = ColorTween(
+      begin: Colors.transparent,
+      end: mucTieu.manHinh.mauNenWidgetChua ?? Colors.transparent
+    ).animate(_dkChuyenDongHoatHinh);
+    return AnimatedBuilder(
+      key: mucTieu.key,
+      animation: anim,
+      builder: (ctx, chil) {
+        return Container(
+          key: mucTieu.key,
+          color: anim.value,
+          child: viewManHinh
+        );
+      });
+  }
+
+  Container _xayDungLopHieuUngHoatHinh({
+    required MucTrongLuongManHinh manHinh,
+    required XayDungWidgetHieuUngChuyenDong? hamXdHoatHinh,
+    required KieuHieuUngMauNen hieuUngMauNen,
+    required BuildContext context,
+    required Map<String, dynamic> thamSoUI
+  }) {
+    XayDungWidgetHieuUngChuyenDong? hoatHinh = hamXdHoatHinh;
+    Container containerManHinh = manHinh.taoContainer(context, thamSoUI);
+    Widget mhMoiContainer;
+    if (hieuUngMauNen == KieuHieuUngMauNen.khong) {
+      mhMoiContainer = containerManHinh;
+    } else {
+      mhMoiContainer = _xayDungLopHieuUngMauNen(
+        context: context,
+        thamSoUI: thamSoUI,
+        mucTieu: manHinh,
+        viewManHinh: containerManHinh.child!
+      );
+    }
+    if (hieuUngMauNen == KieuHieuUngMauNen.chiHieuUngMauNen) {
+      hoatHinh = null;
+    }
+    Widget animWidget;
+    if (hoatHinh != null) {
+      animWidget = hoatHinh.call(context, mhMoiContainer, _dkChuyenDongHoatHinh);
+    } else {
+      animWidget = mhMoiContainer;
+    }
+    _lopHoatHinh = animWidget;
+    return containerManHinh;
+  }
+
   @override
   void capNhatGiaoDienCuaManHinh({required DieuKhienManHinh dieuKhienManHinh, ThamSoDieuKhienWidgetManHinh? duLieuDinhKem}) {
     _dsMhCanHienThi.clear();
@@ -130,14 +204,11 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
     bool choPhepHoatHinh = true;
     if (laThemMoi) {
       temp = thamSoDk.manHinhMoi?.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoChoPhepHoatHinh];
-      if (temp is bool) {
-          choPhepHoatHinh = temp;
-      }
     } else {
       temp = thamSoDk.manHinhCu?.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoChoPhepHoatHinh];
-      if (temp is bool) {
-          choPhepHoatHinh = temp;
-      }
+    }
+    if (temp is bool) {
+      choPhepHoatHinh = temp;
     }
     temp = thamSoDk.thamSoDieuKhienThayDoiManHinh?[WidgetLuongManHinhXepLop.kKeyThamSoChoPhepHoatHinh];
     if (temp is bool) {
@@ -151,6 +222,7 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
     }
 
     XayDungWidgetHieuUngChuyenDong? hoatHinh;
+    KieuHieuUngMauNen hieuUngMauNen = KieuHieuUngMauNen.khong;
     if (choPhepHoatHinh) {
       hoatHinh = widget.hoatHinh;
       temp = (laThemMoi ? thamSoDk.manHinhMoi : thamSoDk.manHinhCu)?.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinh];
@@ -161,17 +233,29 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
       if (temp is XayDungWidgetHieuUngChuyenDong) {
           hoatHinh = temp;
       }
+      temp = (laThemMoi ? thamSoDk.manHinhMoi : thamSoDk.manHinhCu)?.manHinh.thamSoDieuKhienWidgetLuong[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinhMauNen];
+      if (temp is KieuHieuUngMauNen) {
+          hieuUngMauNen = temp;
+      }
+      temp = thamSoDk.thamSoDieuKhienThayDoiManHinh?[WidgetLuongManHinhXepLop.kKeyThamSoHoatHinhMauNen];
+      if (temp is KieuHieuUngMauNen) {
+          hieuUngMauNen = temp;
+      }
     }
-    if (hoatHinh != null) {
+    if (hoatHinh != null || hieuUngMauNen != KieuHieuUngMauNen.khong) {
       final Map<String, dynamic> thamSoUI = {
         WidgetLuongManHinhXepLop.kKeyDieuKhienHoatHoa: _dkChuyenDongHoatHinh,
         WidgetLuongManHinhXepLop.kKeyDieuKhienKieuChuyenDoi: laThemMoi
       };
       if (laThemMoi) {
         _xayDungDSHienThiManHinh(context, thamSoDk.manHinhCu, thamSoDk.danhSachManHinh);
-        final Container mhMoiContainer = thamSoDk.manHinhMoi!.taoContainer(context, thamSoUI);
-        final Widget animWidget = hoatHinh.call(context, mhMoiContainer, _dkChuyenDongHoatHinh);
-        _lopHoatHinh = animWidget;
+        final Container mhMoiContainer = _xayDungLopHieuUngHoatHinh(
+          manHinh: thamSoDk.manHinhMoi!,
+          hamXdHoatHinh: hoatHinh,
+          hieuUngMauNen: hieuUngMauNen,
+          context: context,
+          thamSoUI: thamSoUI
+        );
         setState(() {});
         _dkChuyenDongHoatHinh.forward(from: _dkChuyenDongHoatHinh.lowerBound).then((value) {
           _dsMhCanHienThi.add(mhMoiContainer);
@@ -182,8 +266,13 @@ class _TrangThaiWidgetLuongManHinhXepLop extends TrangThaiWidgetCuaDieuKhien<Wid
         });
       } else {
         _xayDungDSHienThiManHinh(context, thamSoDk.manHinhMoi, thamSoDk.danhSachManHinh);
-        final Widget animWidget = hoatHinh.call(context, thamSoDk.manHinhCu!.taoContainer(context, thamSoUI), _dkChuyenDongHoatHinh);
-        _lopHoatHinh = animWidget;
+        final _ = _xayDungLopHieuUngHoatHinh(
+          manHinh: thamSoDk.manHinhCu!,
+          hamXdHoatHinh: hoatHinh,
+          hieuUngMauNen: hieuUngMauNen,
+          context: context,
+          thamSoUI: thamSoUI
+        );
         setState(() {});
         _dkChuyenDongHoatHinh.reverse(from: _dkChuyenDongHoatHinh.upperBound).then((value) {
           _lopHoatHinh = null;

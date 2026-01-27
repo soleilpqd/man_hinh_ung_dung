@@ -61,7 +61,7 @@ class _TrangThaiWidgetLuongManHinhDonGian extends TrangThaiWidgetCuaDieuKhien<Wi
 
   @override
   Widget build(BuildContext context) {
-    return _manHinhCanHienThi?.taoContainer(context, null) ?? Container(color: Colors.white.withAlpha(0));
+    return _manHinhCanHienThi?.taoContainer(context, null) ?? Container(color: Colors.transparent);
   }
 
 }

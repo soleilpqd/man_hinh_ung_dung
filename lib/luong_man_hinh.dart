@@ -41,7 +41,7 @@ class MucTrongLuongManHinh {
   Container taoContainer(BuildContext context, Map<String, dynamic>? thamSo) {
     _container ??= Container(
       key: key,
-      color: manHinh.mauNenWidgetChua ?? Colors.white.withAlpha(0),
+      color: manHinh.mauNenWidgetChua ?? Colors.transparent,
       child: manHinh.xayDungGiaoDienNguoiDung(context, thamSo)
     );
     return _container!;
