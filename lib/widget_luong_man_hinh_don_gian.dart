@@ -30,7 +30,8 @@ import 'package:man_hinh_ung_dung/man_hinh_ung_dung.dart';
 /// Không chuyển động hoạt hình, không tham số điều khiển.
 class WidgetLuongManHinhDonGian extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
 
-  const WidgetLuongManHinhDonGian({super.key, required super.dieuKhienManHinh});
+  // ignore: use_key_in_widget_constructors
+  WidgetLuongManHinhDonGian({required super.dieuKhienManHinh});
 
   @override
   State<StatefulWidget> createState()  => _TrangThaiWidgetLuongManHinhDonGian();

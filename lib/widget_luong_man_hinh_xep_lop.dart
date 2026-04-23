@@ -77,8 +77,8 @@ class WidgetLuongManHinhXepLop extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// Hoạt hình mặc định
   final XayDungWidgetHieuUngChuyenDong? hoatHinh;
 
-  const WidgetLuongManHinhXepLop({
-    super.key,
+  // ignore: use_key_in_widget_constructors
+  WidgetLuongManHinhXepLop({
     required super.dieuKhienManHinh,
     this.doDaiHoatHinh = const Duration(milliseconds: 300),
     this.choPhepChamKhiChuyenDongHoatHinh = false,

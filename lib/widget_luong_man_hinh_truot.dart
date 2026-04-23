@@ -67,8 +67,8 @@ class WidgetLuongManHinhTruot extends WidgetCuaDieuKhienManHinh<LuongManHinh> {
   /// Cho phép chạm khi đang chuyển động hoạt hình
   final bool choPhepChamKhiChuyenDongHoatHinh;
 
-  const WidgetLuongManHinhTruot({
-    super.key,
+  // ignore: use_key_in_widget_constructors
+  WidgetLuongManHinhTruot({
     required super.dieuKhienManHinh,
     this.doDaiHoatHinh = const Duration(milliseconds: 300),
     this.phuongHuong = PhuongHuongLuongManHinhTruot.traiSangPhai,

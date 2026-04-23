@@ -62,7 +62,16 @@ abstract class WidgetCuaDieuKhienManHinh<T extends DieuKhienManHinh> extends Sta
 
   final T dieuKhienManHinh;
 
-  const WidgetCuaDieuKhienManHinh({super.key, required this.dieuKhienManHinh});
+  WidgetCuaDieuKhienManHinh({required this.dieuKhienManHinh}) : super(key: dieuKhienManHinh.khoaWidgetGoc);
+
+}
+
+/// Class cơ sở/mẫu cho widget tĩnh của Điều khiển màn hình
+abstract class WidgetTinhCuaDieuKhienManHinh<T extends DieuKhienManHinh> extends StatelessWidget {
+
+  final T dieuKhienManHinh;
+
+  WidgetTinhCuaDieuKhienManHinh({required this.dieuKhienManHinh}) : super(key: dieuKhienManHinh.khoaWidgetGoc);
 
 }
 
@@ -110,7 +119,10 @@ class DieuKhienManHinh with ThongTinLapTrinh {
   /// Sử dụng cho hàm `laManHinhChinhTrongLuong` => dừng đệ quy ở màn hình gốc
   final bool laManHinhGoc;
 
-  DieuKhienManHinh({this.laManHinhGoc = false});
+  /// Key cho widget gốc của màn hình
+  final Key khoaWidgetGoc;
+
+  DieuKhienManHinh({Key? khoaWidget, this.laManHinhGoc = false}) : khoaWidgetGoc = khoaWidget ?? GlobalKey();
 
   /// Widget của điều khiển màn hình (mặc định trả lại trong hàm `xayDungGiaoDienNguoiDung`)
   Widget? widgetCuaManHinh;
